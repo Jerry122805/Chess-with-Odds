@@ -1,0 +1,19 @@
+.board {
+    display: grid;
+    grid-template-columns: 70px 70px 70px 70px 70px 70px 70px 70px;
+}
+
+.square{
+    height: 70px;
+}
+
+.light{
+    background-color: white;
+}
+
+.dark{
+    background-color:green;
+}
+
+
+
