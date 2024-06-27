@@ -1,21 +1,54 @@
-function validMove(piece){
+function validMove(color, piece){
     if(piece === 'p'){
-
+        if(color === 'w'){
+            if(Math.abs(startSquare[0].charCodeAt(0)-endSquare[0].charCodeAt(0)) === 1 || Number(endSquare[1]) - Number(startSquare[1]) === 1){
+                if(piecePositions[endSquare]){
+                    return true;
+                }
+            }
+            else if(Math.abs(startSquare[0] === endSquare[0])){
+                if(Number(endSquare[1])-Number(startSquare[1] === 1)){
+                    return true;
+                }
+                else if(Number(endSquare[1])-Number(startSquare[1] === 2 && Number(startSquare[1]) === 2)){
+                    return true
+                }
+                }
+                return false;
+            }
+        else{
+            
+        }
+        
     }
     else if(piece === 'b'){
-
+        if(Math.abs(startSquare[0].charCodeAt(0)-endSquare[0].charCodeAt(0)) === Math.abs(Number(startSquare[1]) - Number(endSquare[1]))){
+            return true;
+        }
     }
     else if(piece === 'n'){
-
+        if((Math.abs(startSquare[0].charCodeAt(0)-endSquare[0].charCodeAt(0)) === 2 && Math.abs(Number(startSquare[1]) - Number(endSquare[1])) === 1) || (Math.abs(startSquare[0].charCodeAt(0)-endSquare[0].charCodeAt(0)) === 1 && Math.abs(Number(startSquare[1]) - Number(endSquare[1])) === 2)){
+            return true;
+        }
     }
     else if(piece === 'q'){
+        if(validMove('r') || validMove('b')){
+            return true;
+        }
+    }
+    else if(piece == 'r'){
+        if(startSquare[0] === endSquare[0] || startSquare[1] === endSquare[1]){
+            return true;
+        }
 
-    }else{
-
+    } else{
+        if(Math.abs(startSquare[0].charCodeAt(0)-endSquare[0].charCodeAt(0)) === 1 || Math.abs(Number(startSquare[1]) - Number(endSquare[1])) === 1){
+            return true;
+        }
     }
 }
 
-function isCheck(){
+function isInCheck(color, piecePositions){
     
 }
 
@@ -37,16 +70,16 @@ function choseSquare(e){
     if(startSquare){
         endSquare = e.target.id;
         console.log(endSquare);
-        if(validMove(e.target.id[1])){
-
-
-
+        console.log(piecePositions[startSquare][0], piecePositions[startSquare][1]);
+        if(validMove(piecePositions[startSquare][1])){
+            console.log("guh");
             whiteMove = !whiteMove;
-            startSquare = null;
-            endSquare = null
         }
+        startSquare = null;
+        endSquare = null;
+        return;
     }
-    if(!validSquare(e)){
+    else if(!validSquare(e)){
         return;
     }
     startSquare = e.target.id;
