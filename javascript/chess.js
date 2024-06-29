@@ -1,33 +1,50 @@
 function validMove(color, piece){
+    const changeX = endSquare[0].charCodeAt(0)-startSquare[0].charCodeAt(0);
+    const changeY = Number(endSquare[1]) - Number(startSquare[1]);
+    const absChangeX = Math.abs(changeX);
+    const absChangeY = Math.abs(changeY);
     if(piece === 'p'){
         if(color === 'w'){
-            if(Math.abs(startSquare[0].charCodeAt(0)-endSquare[0].charCodeAt(0)) === 1 || Number(endSquare[1]) - Number(startSquare[1]) === 1){
-                if(piecePositions[endSquare]){
+            if(absChangeX === 1 || changeY === 1){
+                if(piecePositions[endSquare][0] === 'b'){
                     return true;
                 }
             }
-            else if(Math.abs(startSquare[0] === endSquare[0])){
-                if(Number(endSquare[1])-Number(startSquare[1] === 1)){
+            else if(changeX === 0){
+                if(changeY === 1){
                     return true;
                 }
-                else if(Number(endSquare[1])-Number(startSquare[1] === 2 && Number(startSquare[1]) === 2)){
-                    return true
+                else if(changeY === 2 && Number(startSquare[1]) === 2){
+                    return true;
                 }
                 }
-                return false;
+            return false;
             }
         else{
-            
+            if(absChangeX === 1 || changeY === -1){
+                if(piecePositions[endSquare][0] === 'w'){
+                    return true;
+                }
+            }
+            else if(changeX === 0){
+                if(changeY === -1){
+                    return true;
+                }
+                else if(changeY === -2 && Number(startSquare[1]) === 7){
+                    return true;
+                }
+                }
+            return false;
         }
         
     }
     else if(piece === 'b'){
-        if(Math.abs(startSquare[0].charCodeAt(0)-endSquare[0].charCodeAt(0)) === Math.abs(Number(startSquare[1]) - Number(endSquare[1]))){
+        if(absChangeX === absChangeY){
             return true;
         }
     }
     else if(piece === 'n'){
-        if((Math.abs(startSquare[0].charCodeAt(0)-endSquare[0].charCodeAt(0)) === 2 && Math.abs(Number(startSquare[1]) - Number(endSquare[1])) === 1) || (Math.abs(startSquare[0].charCodeAt(0)-endSquare[0].charCodeAt(0)) === 1 && Math.abs(Number(startSquare[1]) - Number(endSquare[1])) === 2)){
+        if((absChangeX === 2 && absChangeY === 1) || (absChangeX === 1 && absChangeY === 2)){
             return true;
         }
     }
@@ -37,12 +54,12 @@ function validMove(color, piece){
         }
     }
     else if(piece == 'r'){
-        if(startSquare[0] === endSquare[0] || startSquare[1] === endSquare[1]){
+        if(!absChangeX || !absChangeY){
             return true;
         }
 
     } else{
-        if(Math.abs(startSquare[0].charCodeAt(0)-endSquare[0].charCodeAt(0)) === 1 || Math.abs(Number(startSquare[1]) - Number(endSquare[1])) === 1){
+        if(absChangeX === 1 || absChangeY === 1){
             return true;
         }
     }
@@ -68,10 +85,12 @@ function validSquare(e){
 function choseSquare(e){
     //if we haven't chosen a starting square then choose it otherwise we choose an ending square and see if the square works
     if(startSquare){
+        const color = piecePositions[startSquare][0];
+        const piece = piecePositions[startSquare][1];
         endSquare = e.target.id;
         console.log(endSquare);
-        console.log(piecePositions[startSquare][0], piecePositions[startSquare][1]);
-        if(validMove(piecePositions[startSquare][1])){
+        console.log(color, piece);
+        if(validMove(color, piece)){
             console.log("guh");
             whiteMove = !whiteMove;
         }
