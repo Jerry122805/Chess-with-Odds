@@ -12,7 +12,7 @@ export function validStartSquare(e, whiteMove, piecePositions){
 }
 
 
-export function validPieceMove(color, piece, startSquare, endSquare){
+function validPieceMove(color, piece, startSquare, endSquare, piecePositions){
     if(startSquare === endSquare){
         return false;
     }
@@ -23,8 +23,8 @@ export function validPieceMove(color, piece, startSquare, endSquare){
     if(piece === 'p'){
         if(color === 'w'){
             if(absChangeX === 1 || changeY === 1){
-                if(piecePositions[endSquare][0] === 'b'){
-                    return true;
+                if(!piecePositions[endSquare]){
+                    return piecePositions[endSquare][0] === 'b';
                 }
             }
             else if(changeX === 0){
@@ -34,13 +34,13 @@ export function validPieceMove(color, piece, startSquare, endSquare){
                 else if(changeY === 2 && Number(startSquare[1]) === 2){
                     return true;
                 }
-                }
+            }
             return false;
             }
         else{
             if(absChangeX === 1 || changeY === -1){
-                if(piecePositions[endSquare][0] === 'w'){
-                    return true;
+                if(!piecePositions[endSquare]){
+                    return piecePositions[endSquare][0] === 'w';
                 }
             }
             else if(changeX === 0){
@@ -82,7 +82,7 @@ export function validPieceMove(color, piece, startSquare, endSquare){
     }
 }
 
-export function pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions){
+function pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions){
     if(piecePositions[endSquare] && piecePositions[endSquare][0] === color){
         return false;
     }
@@ -125,6 +125,40 @@ export function pieceNotBlocked(color, piece, startSquare, endSquare, piecePosit
     return true;
 }
 
-export function inCheck(){
-    
+function findKingPosition(color, piecePositions){
+    for(let i = 'a'; i !== 'i'; i = String.fromCharCode(i.charCodeAt(0)+1)){
+        for(let j = 1; j !== 9; j++){
+            if(piecePositions[i+j] === color + 'k'){
+                return i+j;
+            }
+        }
+    }
+}
+
+function inCheck(color, piecePositions){
+    const kingPosition = findKingPosition(color, piecePositions);
+    for(let i = 'a'; i !== 'i'; i = String.fromCharCode(i.charCodeAt(0)+1)){
+        for(let j = 1; j !== 9; j++){
+            if(!piecePositions[i+j] || piecePositions[i+j][0] === color){
+                continue;
+            }
+            const pieceColor = piecePositions[i+j][0];
+            const piece = piecePositions[i+j][1];
+
+            if(validPieceMove(pieceColor, piece, i+j, kingPosition, piecePositions) && pieceNotBlocked(pieceColor, piece, i+j, kingPosition, piecePositions)){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function willNotBeInCheck(color, piece, startSquare, endSquare, piecePositions){
+    delete piecePositions[startSquare];
+    piecePositions[endSquare] = color + piece;
+    return !inCheck(color, piecePositions);
+}
+
+export function validMove(color, piece, startSquare, endSquare, piecePositions){
+    return validPieceMove(color, piece, startSquare, endSquare, piecePositions) && pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions) && willNotBeInCheck(color, piece, startSquare, endSquare, piecePositions);
 }

@@ -1,4 +1,4 @@
-import {validStartSquare, validPieceMove, pieceNotBlocked} from "./isMoveValid.js"
+import {validStartSquare, validMove} from "./isMoveValid.js"
 
 function choseSquare(e){
     //if we haven't chosen a starting square then choose it otherwise we choose an ending square and see if the square works
@@ -7,8 +7,7 @@ function choseSquare(e){
         const piece = piecePositions[startSquare][1];
         endSquare = e.target.id;
         console.log(endSquare);
-        if(validPieceMove(color, piece, startSquare, endSquare) && pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions)){
-            console.log("guh");
+        if(validMove(color, piece, startSquare, endSquare, piecePositions)){
             whiteMove = !whiteMove;
         }
         //if move isn't valid then we reset anyways
