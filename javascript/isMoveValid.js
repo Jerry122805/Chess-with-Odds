@@ -13,6 +13,9 @@ export function validStartSquare(e, whiteMove, piecePositions){
 
 
 export function validPieceMove(color, piece, startSquare, endSquare){
+    if(startSquare === endSquare){
+        return false;
+    }
     const changeX = endSquare[0].charCodeAt(0)-startSquare[0].charCodeAt(0);
     const changeY = Number(endSquare[1]) - Number(startSquare[1]);
     const absChangeX = Math.abs(changeX);
@@ -63,11 +66,11 @@ export function validPieceMove(color, piece, startSquare, endSquare){
         }
     }
     else if(piece === 'q'){
-        if(validMove('r') || validMove('b')){
+        if(validPieceMove('r') || validPieceMove('b')){
             return true;
         }
     }
-    else if(piece == 'r'){
+    else if(piece === 'r'){
         if(!absChangeX || !absChangeY){
             return true;
         }
@@ -77,4 +80,51 @@ export function validPieceMove(color, piece, startSquare, endSquare){
             return true;
         }
     }
+}
+
+export function pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions){
+    if(piecePositions[endSquare] && piecePositions[endSquare][0] === color){
+        return false;
+    }
+    if(piece === 'n'){
+        return true;
+    }
+
+    const changeX = endSquare[0].charCodeAt(0)-startSquare[0].charCodeAt(0);
+    const changeY = Number(endSquare[1]) - Number(startSquare[1]);
+
+
+    function stepX(){
+    }
+    if(changeX > 0){
+        stepX = () => {startSquare = String.fromCharCode(startSquare[0].charCodeAt(0)+1) + startSquare[1];}
+    }
+    else if(changeX < 0){
+        stepX = () => {startSquare = String.fromCharCode(startSquare[0].charCodeAt(0)-1) + startSquare[1];}
+    }
+
+    function stepY(){
+    }
+    if(changeY > 0){
+        stepY = () => {startSquare = startSquare[0] + (Number(startSquare[1])+1);}
+    }
+    else if(changeY < 0){
+        stepY = () => {startSquare = startSquare[0] + (Number(startSquare[1])-1);}
+    }
+
+    stepX();
+    stepY();
+
+    while(startSquare !== endSquare){
+        if(piecePositions[startSquare]){
+            return false;
+        }
+        stepX();
+        stepY();
+    }
+    return true;
+}
+
+export function inCheck(){
+    
 }
