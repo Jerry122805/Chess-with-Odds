@@ -1,5 +1,5 @@
-import {validStartSquare, validMove} from "./isMoveValid.js"
-
+import {validStartSquare, validMove} from "./check-move-validity.js"
+import {movePiece} from "./execute-move.js"
 function choseSquare(e){
     //if we haven't chosen a starting square then choose it otherwise we choose an ending square and see if the square works
     if(startSquare){
@@ -8,8 +8,12 @@ function choseSquare(e){
         endSquare = e.target.id;
         console.log(endSquare);
         if(validMove(color, piece, startSquare, endSquare, piecePositions)){
+            delete piecePositions[startSquare];
+            piecePositions[endSquare] = color + piece;
+            movePiece(startSquare, endSquare);
             whiteMove = !whiteMove;
         }
+
         //if move isn't valid then we reset anyways
         startSquare = null;
         endSquare = null;
@@ -25,7 +29,7 @@ function choseSquare(e){
 //setting up click feature
 let chessSquares = document.getElementsByTagName("div");
 for(let i = 1; i <= 64; i++){
-    chessSquares[i].addEventListener("click", choseSquare)
+    chessSquares[i].addEventListener("click", choseSquare);
 }
 
 let whiteMove = true;

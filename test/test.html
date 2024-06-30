@@ -6,13 +6,15 @@
     <body>
         <div style="background-color:blue">e</div>
         <script>
-            let x;
-            if( a = x){
-                console.log("guh");
+            let x = {};
+            x.a = 'guh';
+            console.log(x);
+            function del(obj){
+                delete obj['a'];
+                obj['b'] = 'guh';
+                console.log(x);
             }
-            else{
-                console.log("wpeorij");
-            }
+            del(x);
         </script>
     </body>
 </html>
