@@ -161,7 +161,7 @@ function willNotBeInCheck(color, piece, startSquare, endSquare, piecePositions){
     return !inCheck(color, newPiecePositions);
 }
 
+
 export function validMove(color, piece, startSquare, endSquare, piecePositions){
-    willNotBeInCheck(color, piece, startSquare, endSquare, piecePositions);
     return validPieceMove(color, piece, startSquare, endSquare, piecePositions) && pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions) && willNotBeInCheck(color, piece, startSquare, endSquare, piecePositions);
 }

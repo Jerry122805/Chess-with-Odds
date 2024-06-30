@@ -1,7 +1,15 @@
 import {validStartSquare, validMove} from "./check-move-validity.js"
 import {movePiece} from "./execute-move.js"
+import {highlightSquare, removeHighlight} from "./aesthetics.js"
+
+
 function choseSquare(e){
     //if we haven't chosen a starting square then choose it otherwise we choose an ending square and see if the square works
+    if(endSquare){
+        removeHighlight(endSquare)
+        endSquare = null;
+    }
+
     if(startSquare){
         const color = piecePositions[startSquare][0];
         const piece = piecePositions[startSquare][1];
@@ -11,18 +19,21 @@ function choseSquare(e){
             delete piecePositions[startSquare];
             piecePositions[endSquare] = color + piece;
             movePiece(startSquare, endSquare);
+            highlightSquare(endSquare);
+            removeHighlight(startSquare);
             whiteMove = !whiteMove;
         }
 
         //if move isn't valid then we reset anyways
         startSquare = null;
-        endSquare = null;
         return;
     }
     else if(!validStartSquare(e, whiteMove, piecePositions)){
         return;
     }
+
     startSquare = e.target.id;
+    highlightSquare(startSquare);
     console.log(startSquare);
 }
 
