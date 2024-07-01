@@ -11,6 +11,9 @@ export function validStartSquare(e, whiteMove, piecePositions){
     return false;
 }
 
+function canCastle(){
+    
+}
 
 function validPieceMove(color, piece, startSquare, endSquare, piecePositions){
     if(startSquare === endSquare){

@@ -1,6 +1,6 @@
 import {validStartSquare, validMove} from "./check-move-validity.js"
 import {movePiece, highlightSquare, removeHighlight} from "./execute-move.js"
-
+import {recordMove} from "../notation/notation-history.js";
 
 function choseSquare(e){
     //if we haven't chosen a starting square then choose it otherwise we choose an ending square and see if the square works
@@ -15,12 +15,7 @@ function choseSquare(e){
         endSquare = e.target.id;
         console.log(endSquare);
         if(validMove(color, piece, startSquare, endSquare, piecePositions)){
-            if(piecePositions[endSquare]){
-                moveList.push(piece + 'x' + endSquare);
-            }
-            else{
-                moveList.push(piece + endSquare);
-            }
+            recordMove(color, piece, startSquare, endSquare, piecePositions);
             movePiece(color, piece, startSquare, endSquare, piecePositions);
             whiteMove = !whiteMove;
         }
@@ -45,7 +40,7 @@ for(let i = 1; i <= 64; i++){
 let whiteMove = true;
 let startSquare = null;
 let endSquare = null;
-const moveList = [];
+export const moveList = [];
 
 
 let piecePositions = {
