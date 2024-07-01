@@ -1,6 +1,5 @@
 import {validStartSquare, validMove} from "./check-move-validity.js"
-import {movePiece} from "./execute-move.js"
-import {highlightSquare, removeHighlight} from "./aesthetics.js"
+import {movePiece, highlightSquare, removeHighlight} from "./execute-move.js"
 
 
 function choseSquare(e){
@@ -16,25 +15,25 @@ function choseSquare(e){
         endSquare = e.target.id;
         console.log(endSquare);
         if(validMove(color, piece, startSquare, endSquare, piecePositions)){
-            delete piecePositions[startSquare];
-            piecePositions[endSquare] = color + piece;
-            movePiece(startSquare, endSquare);
-            highlightSquare(endSquare);
-            removeHighlight(startSquare);
+            if(piecePositions[endSquare]){
+                moveList.push(piece + 'x' + endSquare);
+            }
+            else{
+                moveList.push(piece + endSquare);
+            }
+            movePiece(color, piece, startSquare, endSquare, piecePositions);
             whiteMove = !whiteMove;
         }
 
-        //if move isn't valid then we reset anyways
+        removeHighlight(startSquare);
         startSquare = null;
-        return;
     }
-    else if(!validStartSquare(e, whiteMove, piecePositions)){
-        return;
+    if(validStartSquare(e, whiteMove, piecePositions)){    
+        startSquare = e.target.id;
+        highlightSquare(startSquare);
+        console.log(startSquare);
     }
 
-    startSquare = e.target.id;
-    highlightSquare(startSquare);
-    console.log(startSquare);
 }
 
 //setting up click feature
@@ -46,6 +45,7 @@ for(let i = 1; i <= 64; i++){
 let whiteMove = true;
 let startSquare = null;
 let endSquare = null;
+const moveList = [];
 
 
 let piecePositions = {
