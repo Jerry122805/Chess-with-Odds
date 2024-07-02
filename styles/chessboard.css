@@ -2,6 +2,39 @@
     display: grid;
     grid-template-columns: 70px 70px 70px 70px 70px 70px 70px 70px;
 }
+.board-container {
+    display:inline-block;
+}
+
+.timer-movelist-gameoptions{
+    display:flex;
+    flex-direction:column;
+}
+
+.timer-movelist-gameoptions-container{
+    display:inline-block;
+    vertical-align:top;
+}
+
+.timer-black{
+    height: 140px;
+    background-color:red;
+}
+
+.timer-white{
+    height: 140px;
+    background-color: green;
+}
+
+.move-list{
+    height: 210px;
+    background-color: blue;
+}
+
+.game-options{
+    height:70px;
+    background-color:yellow;
+}
 
 .square{
     height: 70px;
@@ -10,6 +43,7 @@
 .light{
     background-color: white;
 }
+
 
 .dark{
     background-color: green;

@@ -215,9 +215,6 @@ export function inCheck(color, piecePositions){
             const piece = piecePositions[i+j][1];
 
             if(validPieceMove(pieceColor, piece, i+j, kingPosition, piecePositions) && pieceNotBlocked(pieceColor, piece, i+j, kingPosition, piecePositions)){
-                if(piece === 'p' && j === kingPosition[1]){
-                    continue;
-                }
                 return true;
             }
         }
