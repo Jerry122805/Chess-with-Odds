@@ -1,16 +1,33 @@
-const moveList = [];
+import {isCastling} from "../chessboard/check-move-validity.js";
 
-hasMoved = {
-    
+const moveList = [];
+export const hasMoved = {
+}
+
+function isACapture(color, piece, startSquare, endSquare, piecePositions){
+    return piecePositions[endSquare];
 }
 
 export function recordMove(color, piece, startSquare, endSquare, piecePositions){
-    if(piecePositions[endSquare]){
-        moveList.push(piece.toUpperCase() + 'x' + endSquare);
+    let currMove;
+    if(isCastling){
+        if(endSquare === 'g1' || endSquare === 'g8'){
+            currMove = '0-0';
+        }
+        else{
+            currMove = '0-0-0';
+        }
     }
     else{
-        moveList.push(piece.toUpperCase() + endSquare);
+        currMove = piece.toUpperCase() + endSquare;
     }
+
+    if(isACapture(color, piece, startSquare, endSquare, piecePositions)){
+        currMove = piece.toUpperCase() + 'x' + endSquare;
+    }
+
+
+    moveList.push(currMove);
 
     if(!hasMoved[startSquare]){
         hasMoved[startSquare] = true;

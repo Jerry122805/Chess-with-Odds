@@ -1,3 +1,8 @@
+import {hasMoved} from "../notation/notation-history.js";
+
+export let isCastling = false;
+let isEnPassant = false;
+
 export function validStartSquare(e, whiteMove, piecePositions){
     const squareName = e.target.id;
     if(piecePositions[squareName]){
@@ -11,8 +16,55 @@ export function validStartSquare(e, whiteMove, piecePositions){
     return false;
 }
 
-function canCastle(){
-    
+export function noLongerCastling(){
+    isCastling = false;
+}
+
+function canCastle(color, piece, startSquare, endSquare, piecePositions){
+    if(color === 'w'){
+        if(hasMoved['e1'] || startSquare !== 'e1'){
+            return false;
+        }
+
+        if(endSquare === 'g1'){
+            if(hasMoved['h1'] || !willNotBeInCheck(color, piece, startSquare, 'f1', piecePositions) || !willNotBeInCheck(color, piece, startSquare, 'g1', piecePositions) || !pieceNotBlocked(color, piece, startSquare, 'g1', piecePositions)){
+                return false;
+            }
+        }
+        else if(endSquare === 'c1'){
+            if(hasMoved['a1'] || !willNotBeInCheck(color, piece, startSquare, 'd1', piecePositions) || !willNotBeInCheck(color, piece, startSquare, 'c1', piecePositions) || !pieceNotBlocked(color, piece, startSquare, 'c1', piecePositions)){
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+
+    }else{
+        if(hasMoved['e8'] || startSquare !== 'e8'){
+            return false;
+        }
+
+        if(endSquare === 'g8'){
+            if(hasMoved['h8'] || !willNotBeInCheck(color, piece, startSquare, 'f8', piecePositions) || !willNotBeInCheck(color, piece, startSquare, 'g8', piecePositions) || !pieceNotBlocked(color, piece, startSquare, 'g8', piecePositions)){
+                return false;
+            }
+        }
+        else if(endSquare === 'c8'){
+            if(hasMoved['a8'] || !willNotBeInCheck(color, piece, startSquare, 'd8', piecePositions) || !willNotBeInCheck(color, piece, startSquare, 'c8', piecePositions) || !pieceNotBlocked(color, piece, startSquare, 'c8', piecePositions)){
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }
+    if(inCheck(color, piecePositions)){
+        return false;
+    }
+
+    isCastling = true;
+    return true;
 }
 
 function validPieceMove(color, piece, startSquare, endSquare, piecePositions){
@@ -82,6 +134,7 @@ function validPieceMove(color, piece, startSquare, endSquare, piecePositions){
         if(absChangeX === 1 || absChangeY === 1){
             return true;
         }
+        return canCastle(color, piece, startSquare, endSquare, piecePositions);
     }
 }
 
@@ -160,7 +213,7 @@ function inCheck(color, piecePositions){
 function willNotBeInCheck(color, piece, startSquare, endSquare, piecePositions){
     let newPiecePositions = JSON.parse(JSON.stringify(piecePositions));
     delete newPiecePositions[startSquare];
-    newPiecePositions[endSquare] = color + piece;
+    newPiecePositions[endSquare] = color + piece;    
     return !inCheck(color, newPiecePositions);
 }
 
