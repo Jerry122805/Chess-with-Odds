@@ -1,14 +1,17 @@
 import {isCastling,noLongerCastling} from "./check-move-validity.js";
+import {findKingPosition, inCheck} from "./check-move-validity.js";
 
-export function highlightSquare(startSquare){
+export function highlightSquare(startSquare, color){
     const htmlSquare = document.getElementById(startSquare);
-    htmlSquare.style.backgroundColor = "#ffff99";
+    htmlSquare.style.backgroundColor = color;
 }
 
 export function removeHighlight(square){
     const htmlSquare = document.getElementById(square);
     htmlSquare.style.backgroundColor = "";
 }
+
+
 
 function movePiece(color, piece, startSquare, endSquare, piecePositions){
     const htmlStartSquare = document.getElementById(startSquare);
@@ -20,7 +23,7 @@ function movePiece(color, piece, startSquare, endSquare, piecePositions){
 
     delete piecePositions[startSquare];
     piecePositions[endSquare] = color + piece;
-    highlightSquare(endSquare);
+    highlightSquare(endSquare, "#ffff99");
 }
 
 function castle(color, piece, startSquare, endSquare, piecePositions){
@@ -52,8 +55,7 @@ export function move(color, piece, startSquare, endSquare, piecePositions){
     if(isCastling){
         castle(color, piece, startSquare, endSquare, piecePositions);
         noLongerCastling();
-        return;
     }
-    movePiece(color, piece, startSquare, endSquare, piecePositions);
+    else{movePiece(color, piece, startSquare, endSquare, piecePositions);}
 }
 

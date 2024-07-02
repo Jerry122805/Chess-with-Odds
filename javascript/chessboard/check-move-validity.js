@@ -142,12 +142,14 @@ function pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions){
     if(piecePositions[endSquare] && piecePositions[endSquare][0] === color){
         return false;
     }
+
     if(piece === 'n'){
         return true;
     }
 
     const changeX = endSquare[0].charCodeAt(0)-startSquare[0].charCodeAt(0);
     const changeY = Number(endSquare[1]) - Number(startSquare[1]);
+
 
     let tempSquare = startSquare;
 
@@ -168,6 +170,16 @@ function pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions){
     else if(changeY < 0){
         stepY = () => {tempSquare = tempSquare[0] + (Number(tempSquare[1])-1);}
     }
+    
+    if(piece === 'p' && changeX === 0){
+        while(tempSquare !== endSquare){
+            stepY();
+            if(piecePositions[tempSquare]){
+                return false;
+            }
+        }
+        return true;
+    }
 
     stepX();
     stepY();
@@ -182,7 +194,7 @@ function pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions){
     return true;
 }
 
-function findKingPosition(color, piecePositions){
+export function findKingPosition(color, piecePositions){
     for(let i = 'a'; i !== 'i'; i = String.fromCharCode(i.charCodeAt(0)+1)){
         for(let j = 1; j !== 9; j++){
             if(piecePositions[i+j] === color + 'k'){
@@ -192,7 +204,7 @@ function findKingPosition(color, piecePositions){
     }
 }
 
-function inCheck(color, piecePositions){
+export function inCheck(color, piecePositions){
     const kingPosition = findKingPosition(color, piecePositions);
     for(let i = 'a'; i !== 'i'; i = String.fromCharCode(i.charCodeAt(0)+1)){
         for(let j = 1; j !== 9; j++){
@@ -203,6 +215,9 @@ function inCheck(color, piecePositions){
             const piece = piecePositions[i+j][1];
 
             if(validPieceMove(pieceColor, piece, i+j, kingPosition, piecePositions) && pieceNotBlocked(pieceColor, piece, i+j, kingPosition, piecePositions)){
+                if(piece === 'p' && j === KingPosition[1]){
+                    continue;
+                }
                 return true;
             }
         }

@@ -25,7 +25,7 @@ function choseSquare(e){
     }
     if(validStartSquare(e, whiteMove, piecePositions)){    
         startSquare = e.target.id;
-        highlightSquare(startSquare);
+        highlightSquare(startSquare, "#ffff99");
         console.log(startSquare);
     }
 
