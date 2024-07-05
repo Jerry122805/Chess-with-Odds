@@ -1,5 +1,4 @@
 import {isCastling,noLongerCastling} from "./check-move-validity.js";
-import {findKingPosition, inCheck} from "./check-move-validity.js";
 
 export function highlightSquare(startSquare, color){
     const htmlSquare = document.getElementById(startSquare);

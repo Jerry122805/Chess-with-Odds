@@ -1,6 +1,7 @@
 import {validStartSquare, validMove} from "./check-move-validity.js"
 import {move, highlightSquare, removeHighlight} from "./execute-move.js"
 import {recordMove} from "../notation/notation-history.js";
+import {startTimer} from "../timer/timer.js";
 
 function choseSquare(e){
     //if we haven't chosen a starting square then choose it otherwise we choose an ending square and see if the square works
@@ -18,6 +19,7 @@ function choseSquare(e){
             recordMove(color, piece, startSquare, endSquare, piecePositions); //record first b/c movePiece changes Piecepositions and we need piece Positions for recordMove
             move(color, piece, startSquare, endSquare, piecePositions);
             whiteMove = !whiteMove;
+            startTimer(whiteMove);
         }
 
         removeHighlight(startSquare);
@@ -30,6 +32,7 @@ function choseSquare(e){
     }
 
 }
+
 
 //setting up click feature
 let chessSquares = document.getElementsByTagName("div");

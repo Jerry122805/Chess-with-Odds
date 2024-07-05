@@ -17,17 +17,17 @@
 }
 
 .timer-black{
-    height: 140px;
+    height: 70px;
     background-color:red;
 }
 
 .timer-white{
-    height: 140px;
+    height: 70px;
     background-color: green;
 }
-
+    
 .move-list{
-    height: 210px;
+    height: 350px;
     background-color: blue;
 }
 
