@@ -1,13 +1,15 @@
 function displayMinuteSeconds(timeInMilliseconds){
     const timeInSeconds = Math.floor(timeInMilliseconds/1000);
-    return `${Math.floor(timeInSeconds/60)}:${((timeInSeconds/100).toFixed(2)).slice(2,4)}`;
+    return `${Math.floor(timeInSeconds/60)}:${(((timeInSeconds % 60)/100).toFixed(2)).slice(2,4)}`;
 
 }
 
 
 function setTimer(timeInMilliseconds){
-    document.querySelector(".timer-white").innerHTML = displayMinuteSeconds(timeInMilliseconds);
-    document.querySelector(".timer-black").innerHTML = displayMinuteSeconds(timeInMilliseconds);
+    timerWhite = timeInMilliseconds;
+    timerBlack = timeInMilliseconds;
+    document.querySelector(".timer-white").innerHTML = displayMinuteSeconds(timerWhite);
+    document.querySelector(".timer-black").innerHTML = displayMinuteSeconds(timerBlack);
 }
 
 
@@ -16,7 +18,7 @@ let timerBlack;
 let stopTimerWhite;
 let stopTimerBlack;
 
-setTimer(6000);
+setTimer(60000);
 
 
 export function startTimer(whiteMove){
