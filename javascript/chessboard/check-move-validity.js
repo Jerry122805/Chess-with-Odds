@@ -295,11 +295,11 @@ export function isCheckmate(color, piecePositions){
         return false;
     }
     if(checkPiece === 'n'){
-        Object.keys(piecePositions).forEach((square) => {
-            if(validMove(piecePositions[square][0], piecePositions[square][1], square, checkPieceSquare, piecePositions)){
+        for(let square in piecePositions){
+            if(color === piecePositions[square][0] && validMove(piecePositions[square][0], piecePositions[square][1], square, checkPieceSquare, piecePositions)){
                 return false;
             }
-        })
+        }
         return true;
     }
     else{
