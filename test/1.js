@@ -1,10 +1,7 @@
-import {b} from "./2.js" 
 
-export function retrieveA(){
-    return a;
+let a = {guh:'guh', buh:'buh'};
+for(let x in a){
+    console.log(x);
 }
 
-let a = 4;
 
-
-b();

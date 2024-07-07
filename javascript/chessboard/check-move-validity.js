@@ -3,23 +3,7 @@ import {hasMoved} from "../notation/notation-history.js";
 export let isCastling = false;
 let isEnPassant = false;
 
-export function validStartSquare(e, whiteMove, piecePositions){
-    const squareName = e.target.id;
-    if(piecePositions[squareName]){
-        if(piecePositions[squareName][0] === 'w' && whiteMove){
-            return true;
-        }
-        else if(piecePositions[squareName][0]==='b' && !whiteMove){
-            return true;
-        }
-    }
-    return false;
-}
-
-export function noLongerCastling(){
-    isCastling = false;
-}
-
+//stuff checking castling
 function canCastle(color, piece, startSquare, endSquare, piecePositions){
     if(color === 'w'){
         if(hasMoved['e1'] || startSquare !== 'e1'){
@@ -66,8 +50,15 @@ function canCastle(color, piece, startSquare, endSquare, piecePositions){
     isCastling = true;
     return true;
 }
+export function noLongerCastling(){
+    isCastling = false;
+}
 
-function validPieceMove(color, piece, startSquare, endSquare, piecePositions){
+//stuff checking individual piece moves
+function validPieceDirection(color, piece, startSquare, endSquare, piecePositions){
+    if(endSquare.charCodeAt(0) < 'a'.charCodeAt(0) || endSquare.charCodeAt(0) > 'h'.charCodeAt(0) || Number(endSquare[1]) < 1 || Number(endSquare[1]) > 8){
+        return false;
+    }
     if(startSquare === endSquare){
         return false;
     }
@@ -121,7 +112,7 @@ function validPieceMove(color, piece, startSquare, endSquare, piecePositions){
         }
     }
     else if(piece === 'q'){
-        if(validPieceMove(color, 'r', startSquare, endSquare, piecePositions) || validPieceMove(color, 'b', startSquare, endSquare, piecePositions)){
+        if(validPieceDirection(color, 'r', startSquare, endSquare, piecePositions) || validPieceDirection(color, 'b', startSquare, endSquare, piecePositions)){
             return true;
         }
     }
@@ -131,13 +122,15 @@ function validPieceMove(color, piece, startSquare, endSquare, piecePositions){
         }
 
     } else{
-        if(absChangeX === 1 || absChangeY === 1){
+        if(absChangeX <= 1 && absChangeY <= 1){
             return true;
         }
-        return canCastle(color, piece, startSquare, endSquare, piecePositions);
-    }
+        else if(absChangeX === 2 && absChangeY === 0){
+            return canCastle(color, piece, startSquare, endSquare, piecePositions);
+        }
+        return false;
+    }   
 }
-
 function pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions){
     if(piecePositions[endSquare] && piecePositions[endSquare][0] === color){
         return false;
@@ -193,7 +186,12 @@ function pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions){
     }
     return true;
 }
+function validPieceMove(color, piece, startSquare, endSquare, piecePositions){
+    return (validPieceDirection(color, piece, startSquare, endSquare, piecePositions) && pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions));
+}
 
+
+//stuff related to checks
 export function findKingPosition(color, piecePositions){
     for(let i = 'a'; i !== 'i'; i = String.fromCharCode(i.charCodeAt(0)+1)){
         for(let j = 1; j !== 9; j++){
@@ -203,6 +201,10 @@ export function findKingPosition(color, piecePositions){
         }
     }
 }
+let checkPieceColor;
+let checkPiece;
+let checkPieceSquare;
+let checkKingPosition;
 
 export function inCheck(color, piecePositions){
     const kingPosition = findKingPosition(color, piecePositions);
@@ -214,7 +216,7 @@ export function inCheck(color, piecePositions){
             const pieceColor = piecePositions[i+j][0];
             const piece = piecePositions[i+j][1];
 
-            if(validPieceMove(pieceColor, piece, i+j, kingPosition, piecePositions) && pieceNotBlocked(pieceColor, piece, i+j, kingPosition, piecePositions)){
+            if(validPieceMove(pieceColor, piece, i+j, kingPosition, piecePositions)){
                 return true;
             }
         }
@@ -222,14 +224,143 @@ export function inCheck(color, piecePositions){
     return false;
 }
 
+export function checkforCheck(color, piecePositions){
+    const kingPosition = findKingPosition(color, piecePositions);
+    for(let i = 'a'; i !== 'i'; i = String.fromCharCode(i.charCodeAt(0)+1)){
+        for(let j = 1; j !== 9; j++){
+            if(!piecePositions[i+j] || piecePositions[i+j][0] === color){
+                continue;
+            }
+            const pieceColor = piecePositions[i+j][0];
+            const piece = piecePositions[i+j][1];
+
+            if(validPieceMove(pieceColor, piece, i+j, kingPosition, piecePositions)){
+                checkPieceColor = pieceColor;
+                checkPiece = piece;
+                checkPieceSquare = i+j;
+                checkKingPosition = kingPosition;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
+function kingCanEscape(color, piecePositions){
+    let column = checkKingPosition.charCodeAt(0);
+    let row = Number(checkKingPosition[1]);
+    return validMove(color, 'k', checkKingPosition, String.fromCharCode(column-1) + (row-1), piecePositions) || validMove(color, 'k', checkKingPosition, String.fromCharCode(column-1) + row, piecePositions) || validMove(color, 'k', checkKingPosition, String.fromCharCode(column-1) + (row+1), piecePositions) || validMove(color, 'k', checkKingPosition, String.fromCharCode(column) + (row+1), piecePositions) || validMove(color, 'k', checkKingPosition, String.fromCharCode(column+1) + (row+1), piecePositions) || validMove(color, 'k', checkKingPosition, String.fromCharCode(column+1) + row, piecePositions) || validMove(color, 'k', checkKingPosition, String.fromCharCode(column+1) + (row-1), piecePositions) || validMove(color, 'k', checkKingPosition, String.fromCharCode(column) + (row-1), piecePositions); 
+    /* if(validMove(color, 'k', checkKingPosition, String.fromCharCode(column-1) + (row-1), piecePositions)){
+        alert("1");
+        return true;
+    }
+    else if(validMove(color, 'k', checkKingPosition, String.fromCharCode(column-1) + row, piecePositions)){
+        alert("2");
+        return true;
+    }
+    else if(validMove(color, 'k', checkKingPosition, String.fromCharCode(column-1) + (row+1), piecePositions)){
+        alert("3");
+        return true;
+    }
+    else if(validMove(color, 'k', checkKingPosition, String.fromCharCode(column) + (row+1), piecePositions)){
+        alert("4");
+        return true;
+    }
+    else if(validMove(color, 'k', checkKingPosition, String.fromCharCode(column+1) + (row+1), piecePositions)){
+        alert("5");
+        return true;
+    }
+    else if(validMove(color, 'k', checkKingPosition, String.fromCharCode(column+1) + row, piecePositions)){
+        alert("6");
+        return true;
+    }
+    else if(validMove(color, 'k', checkKingPosition, String.fromCharCode(column+1) + (row-1), piecePositions)){
+        alert("7");
+        return true;
+    }
+    else if(validMove(color, 'k', checkKingPosition, String.fromCharCode(column) + (row-1), piecePositions)){
+        console.log(color);
+        console.log(String.fromCharCode(column) + (row-1));
+        console.log(piecePositions);
+        return true;
+    }
+        */
+    
+}
+
+export function isCheckmate(color, piecePositions){
+    if(kingCanEscape(color, piecePositions)){
+        console.log("kingCanEscape sucessfully ran");
+        return false;
+    }
+    if(checkPiece === 'n'){
+        Object.keys(piecePositions).forEach((square) => {
+            if(validMove(piecePositions[square][0], piecePositions[square][1], square, checkPieceSquare, piecePositions)){
+                return false;
+            }
+        })
+        return true;
+    }
+    else{
+        const changeX = checkKingPosition[0].charCodeAt(0)-checkPieceSquare[0].charCodeAt(0);
+        const changeY = Number(checkKingPosition[1]) - Number(checkPieceSquare[1]);
+
+        let tempSquare = checkPieceSquare;
+
+        function stepX(){
+        }
+        if(changeX > 0){
+            stepX = () => {tempSquare = String.fromCharCode(tempSquare[0].charCodeAt(0)+1) + tempSquare[1];}
+        }
+        else if(changeX < 0){
+            stepX = () => {tempSquare = String.fromCharCode(tempSquare[0].charCodeAt(0)-1) + tempSquare[1];}
+        }
+
+        function stepY(){
+        }
+        if(changeY > 0){
+            stepY = () => {tempSquare = tempSquare[0] + (Number(tempSquare[1])+1);}
+        }
+        else if(changeY < 0){
+            stepY = () => {tempSquare = tempSquare[0] + (Number(tempSquare[1])-1);}
+        }
+
+        while(tempSquare !== checkKingPosition){
+            for(let square in piecePositions){
+                if(color === piecePositions[square][0] && validMove(piecePositions[square][0], piecePositions[square][1], square, tempSquare, piecePositions)){
+                    return false;
+                }
+            }
+            stepX();
+            stepY();
+        }
+        return true;
+    
+    }
+}
+
 function willNotBeInCheck(color, piece, startSquare, endSquare, piecePositions){
     let newPiecePositions = JSON.parse(JSON.stringify(piecePositions));
     delete newPiecePositions[startSquare];
-    newPiecePositions[endSquare] = color + piece;    
+    newPiecePositions[endSquare] = color + piece;  
     return !inCheck(color, newPiecePositions);
 }
 
 
+//stuff checking overall validity
+export function validStartSquare(e, whiteMove, piecePositions){
+    const squareName = e.target.id;
+    if(piecePositions[squareName]){
+        if(piecePositions[squareName][0] === 'w' && whiteMove){
+            return true;
+        }
+        else if(piecePositions[squareName][0]==='b' && !whiteMove){
+            return true;
+        }
+    }
+    return false;
+}
 export function validMove(color, piece, startSquare, endSquare, piecePositions){
-    return validPieceMove(color, piece, startSquare, endSquare, piecePositions) && pieceNotBlocked(color, piece, startSquare, endSquare, piecePositions) && willNotBeInCheck(color, piece, startSquare, endSquare, piecePositions);
+    return validPieceMove(color, piece, startSquare, endSquare, piecePositions) && willNotBeInCheck(color, piece, startSquare, endSquare, piecePositions);
 }

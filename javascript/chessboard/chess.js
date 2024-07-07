@@ -1,4 +1,4 @@
-import {validStartSquare, validMove} from "./check-move-validity.js"
+import {validStartSquare, validMove, isCheckmate, checkforCheck} from "./check-move-validity.js"
 import {move, highlightSquare, removeHighlight} from "./execute-move.js"
 import {recordMove} from "../notation/notation-history.js";
 import {startTimer} from "../timer/timer.js";
@@ -9,35 +9,37 @@ function choseSquare(e){
         removeHighlight(endSquare)
         endSquare = null;
     }
-
     if(startSquare){
         const color = piecePositions[startSquare][0];
         const piece = piecePositions[startSquare][1];
         endSquare = e.target.id;
-        console.log(endSquare);
         if(validMove(color, piece, startSquare, endSquare, piecePositions)){
             recordMove(color, piece, startSquare, endSquare, piecePositions); //record first b/c movePiece changes Piecepositions and we need piece Positions for recordMove
             move(color, piece, startSquare, endSquare, piecePositions);
             whiteMove = !whiteMove;
             startTimer(whiteMove);
+            if(checkforCheck(whiteMove ? 'w' : 'b', piecePositions)){
+                if(isCheckmate(whiteMove ? 'w' : 'b', piecePositions)){
+                    alert(`${whiteMove ? 'White' : 'Black'} has been checkmated!`);
+                }
+            }
         }
-
         removeHighlight(startSquare);
         startSquare = null;
     }
+
     if(validStartSquare(e, whiteMove, piecePositions)){    
         startSquare = e.target.id;
         highlightSquare(startSquare, "#ffff99");
-        console.log(startSquare);
     }
 
 }
 
 
 //setting up click feature
-let chessSquares = document.getElementsByTagName("div");
-for(let i = 1; i <= 64; i++){
-    chessSquares[i].addEventListener("click", choseSquare);
+let chessSquares = document.getElementsByClassName("square");
+for(const squareElem of chessSquares){
+    squareElem.addEventListener("click", choseSquare);
 }
 
 let whiteMove = true;
