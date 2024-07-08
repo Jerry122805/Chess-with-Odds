@@ -1,0 +1,37 @@
+.timer-movelist-gameoptions-container{
+    display:inline-block;
+    vertical-align:top;
+}
+
+.timer-movelist-gameoptions{
+    display:flex;
+    flex-direction:column;
+}
+
+
+.timer-black{
+    font-size:50px;
+    font-weight:bold;
+    height: 70px;
+    background-color: red;
+
+
+}
+
+.timer-white{
+    font-size: 50px;
+    font-weight: bold;
+    height: 70px;
+    background-color: green;
+
+}
+    
+.move-list{
+    height: 350px;
+    background-color: blue;
+}
+
+.game-options{
+    height:70px;
+    background-color:yellow;
+}

@@ -2,6 +2,7 @@ import {validStartSquare, validMove, isCheckmate, checkforCheck} from "./check-m
 import {move, highlightSquare, removeHighlight} from "./execute-move.js"
 import {recordMove} from "../notation/notation-history.js";
 import {startTimer} from "../timer/timer.js";
+import {gameFinish} from "../gamefinish.js";
 
 function choseSquare(e){
     //if we haven't chosen a starting square then choose it otherwise we choose an ending square and see if the square works
@@ -20,7 +21,7 @@ function choseSquare(e){
             startTimer(whiteMove);
             if(checkforCheck(whiteMove ? 'w' : 'b', piecePositions)){
                 if(isCheckmate(whiteMove ? 'w' : 'b', piecePositions)){
-                    alert(`${whiteMove ? 'White' : 'Black'} has been checkmated!`);
+                    gameFinish(whiteMove ? 'White' : 'Black', 'been checkmated!');
                 }
             }
         }

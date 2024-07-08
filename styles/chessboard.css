@@ -6,36 +6,6 @@
     display:inline-block;
 }
 
-.timer-movelist-gameoptions{
-    display:flex;
-    flex-direction:column;
-}
-
-.timer-movelist-gameoptions-container{
-    display:inline-block;
-    vertical-align:top;
-}
-
-.timer-black{
-    height: 70px;
-    background-color:red;
-}
-
-.timer-white{
-    height: 70px;
-    background-color: green;
-}
-    
-.move-list{
-    height: 350px;
-    background-color: blue;
-}
-
-.game-options{
-    height:70px;
-    background-color:yellow;
-}
-
 .square{
     height: 70px;
 }

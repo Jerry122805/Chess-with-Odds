@@ -28,6 +28,9 @@ export function startTimer(whiteMove){
 
 function runTimerWhite(){
     stopTimerWhite = setInterval(() => {
+        if(timerWhite === '0'){
+            gameFinish(true, "lost by time");
+        }
         timerWhite -= 10;
         document.querySelector(".timer-white").innerHTML = displayMinuteSeconds(timerWhite);
     }, 10)
